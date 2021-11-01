@@ -11,6 +11,16 @@
 ####################################
 
 
+####################################
+# 如果遇到需要指定conan profile的场景
+#    conan profile new --detect myprofile
+#    conan profile show myprofile
+#    conan profile update settings.compiler.libcxx=libstdc++11 myprofile
+#    make clean
+#    make CONAN_PROFILE=myprofile
+####################################
+
+
 # 本文件定义的变量都带CONANB_前缀
 conanbuild_do_nothing:
 	@echo ""
@@ -18,6 +28,7 @@ conanbuild_do_nothing:
 CONANB_TMPFILE=conanbuildinfo.mak conanbuildinfo.txt conaninfo.txt conan.lock graph_info.json
 CONANB_FILE=$(shell ls conanfile.txt conanfile.py 2>/dev/null|head -1)
 CONANB_CMD:=$(shell which conan)
+CONANB_PROFILE:=$(if $(CONAN_PROFILE),--profile $(CONAN_PROFILE),)
 
 # 如果conanfile.txt或conanfile.py存在
 # 则生成并导入conanbuildinfo.mak 
@@ -54,14 +65,20 @@ LDFLAGS+=$(patsubst %,-L%,$(CONAN_LIB_DIRS)) $(LDLIBS)
 
 
 conanbuildinfo.mak: $(CONANB_FILE)
-	$(CONANB_CMD) install .
+	$(CONANB_CMD) install . $(CONANB_PROFILE)
 # 2}}}
 endif
 
 endif
 # 1}}}
 
-_conan_clean:
-	rm -rf $(CONANB_TMPFILE)
+CLEAN_TARGETS: $(CONANB_TMPFILE)
 
-clean:_conan_clean
+ifeq ("x$(CLEAN_TARGETS_DEF)x", "xx")
+CLEAN_TARGETS_DEF:=1
+CLEAN_TARGETS:
+	rm -Rf $^
+endif
+
+
+clean:CLEAN_TARGETS
