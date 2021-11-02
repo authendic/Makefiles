@@ -28,7 +28,7 @@ conanbuild_do_nothing:
 CONANB_TMPFILE=conanbuildinfo.mak conanbuildinfo.txt conaninfo.txt conan.lock graph_info.json
 CONANB_FILE=$(shell ls conanfile.txt conanfile.py 2>/dev/null|head -1)
 CONANB_CMD:=$(shell which conan)
-CONANB_PROFILE:=$(if $(CONAN_PROFILE),--profile $(CONAN_PROFILE),)
+CONANB_PROFILE_ARG:=$(if $(CONAN_PROFILE),--profile $(CONAN_PROFILE),)
 
 # 如果conanfile.txt或conanfile.py存在
 # 则生成并导入conanbuildinfo.mak 
@@ -65,7 +65,7 @@ LDFLAGS+=$(patsubst %,-L%,$(CONAN_LIB_DIRS)) $(LDLIBS)
 
 
 conanbuildinfo.mak: $(CONANB_FILE)
-	$(CONANB_CMD) install . $(CONANB_PROFILE)
+	$(CONANB_CMD) install . $(CONANB_PROFILE_ARG)
 # 2}}}
 endif
 
