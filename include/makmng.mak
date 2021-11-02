@@ -15,14 +15,22 @@ MAKMNG_ZIP:=$(MAKMNG_CACHE_DIR)/makmng.zip
 MAKMNG_INCLUDE:=$(MAKMNG_CACHE_DIR)/Makefiles-master/include
 MAKMNG_SELF:=$(lastword $(MAKEFILE_LIST))
 
+cleancache:
+	rm -Rf $(MAKMNG_CACHE_DIR)
+
+## 除了clean job，需要进行依赖解析
+ifneq ($(MAKECMDGOALS),clean)
 $(MAKMNG_ZIP):
 	mkdir -p $(MAKMNG_CACHE_DIR)
 	wget -L $(MAKMNG_URL) -O $@
 
 $(MAKMNG_INCLUDE): $(MAKMNG_ZIP)
+	echo $@
 	cd $(MAKMNG_CACHE_DIR); unzip $(MAKMNG_ZIP)
 
 $(MAKMNG_FILES:%=$(MAKMNG_INCLUDE)/%): $(MAKMNG_INCLUDE)
+	echo $@
+endif
 
 CLEAN_TARGETS+=$(MAKMNG_CACHE_DIR)/Makefiles-*
 
@@ -32,8 +40,6 @@ CLEAN_TARGETS_JOB:
 	rm -Rf $(CLEAN_TARGETS)
 endif
 
-cleancache:
-	rm -Rf $(MAKMNG_CACHE_DIR)
 
 clean:CLEAN_TARGETS_JOB
 
