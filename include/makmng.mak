@@ -18,13 +18,13 @@ MAKMNG_SELF:=$(lastword $(MAKEFILE_LIST))
 cleancache:
 	rm -Rf $(MAKMNG_CACHE_DIR)
 
-define makmng_check_file_exists
-$(if $(wildcard $(1)),yes,)
-endef
-
-ifneq ($(call makmng_check_file_exists,$(MAKMNG_INCLUDE)),yes)
-$(info not exists)
-endif
+## define makmng_check_file_exists
+## $(if $(wildcard $(1)),yes,)
+## endef
+## 
+## ifneq ($(call makmng_check_file_exists,$(MAKMNG_INCLUDE)),yes)
+## $(info not exists)
+## endif
 
 
 $(MAKMNG_ZIP):
@@ -50,6 +50,7 @@ endif
 clean:CLEAN_TARGETS_JOB
 
 makupdate:
+	rm -Rf /tmp/makmng.mak
 	wget -L $(MAKMNG_UPDATE_URL) -O /tmp/makmng.mak
 	sha256sum $(MAKMNG_SELF) /tmp/makmng.mak > /tmp/makmng.mak.sha256sum
 	if [ `awk '{sum[$$1]++}END{print length(sum)}' /tmp/makmng.mak.sha256sum` -eq 2 ];then \
