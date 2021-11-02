@@ -14,8 +14,8 @@
 ####################################
 # 如果遇到需要指定conan profile的场景
 #    conan profile new --detect myprofile
-#    conan profile show myprofile
 #    conan profile update settings.compiler.libcxx=libstdc++11 myprofile
+#    conan profile show myprofile
 #    make clean
 #    make CONAN_PROFILE=myprofile
 ####################################
